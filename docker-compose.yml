@@ -1,0 +1,109 @@
+# =============================================================================
+# devops-site — Docker Compose
+#
+# Serviços:
+#   mysql    — MySQL 8.4 (init automático via db/init.sql)
+#   backend  — Node.js/Express, porta 3000 (interna)
+#   frontend — NGINX, porta 80 (pública)
+#
+# Uso:
+#   docker compose up -d --build
+#
+# Acesso:
+#   http://localhost      → site
+#   http://localhost/api  → API (via proxy NGINX)
+#   localhost:3306        → MySQL direto (ferramentas externas)
+# =============================================================================
+
+services:
+
+  # ── MySQL ──────────────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.4
+    container_name: devops-site-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE:      devops_site
+      MYSQL_USER:          devops
+      MYSQL_PASSWORD:      devops
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - devops-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "devops", "-pdevops"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ── Backend (Node.js) ──────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: devops-site-backend:latest
+    container_name: devops-site-backend
+    expose:
+      - "3000"
+    environment:
+      NODE_ENV:        production
+      PORT:            "3000"
+      DB_HOST:         mysql
+      DB_PORT:         "3306"
+      DB_USER:         devops
+      DB_PASSWORD:     devops
+      DB_NAME:         devops_site
+      JWT_SECRET:      troque-este-segredo-em-producao
+      JWT_EXPIRES_IN:  8h
+      ALLOWED_ORIGINS: "http://localhost,http://localhost:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - devops-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # ── Frontend (NGINX) ───────────────────────────────────────────────────────
+  # Usa a imagem oficial do NGINX diretamente — sem Dockerfile.
+  # O nginx.conf e os arquivos estáticos são montados via volume.
+  frontend:
+    image: nginx:1.27-alpine
+    container_name: devops-site-frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+    networks:
+      - devops-net
+    restart: unless-stopped
+    # Healthcheck usa /nginx-health — stub local, não depende do backend
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/nginx-health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+# ─── Volumes ──────────────────────────────────────────────────────────────────
+volumes:
+  mysql_data:
+    driver: local
+
+# ─── Rede ─────────────────────────────────────────────────────────────────────
+networks:
+  devops-net:
+    driver: bridge

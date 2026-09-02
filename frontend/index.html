@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevOps World</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ═══════════════════════ NAVBAR ═══════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <a href="#" class="nav-brand" data-page="home" aria-label="Ir para a página inicial">
+      <span class="nav-logo">&#9881;</span>
+      <span class="nav-title">DevOps<span class="accent">World</span></span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#" data-page="home" class="nav-link active">Home</a></li>
+      <li><a href="#" data-page="docker" class="nav-link">Docker</a></li>
+      <li><a href="#" data-page="terraform" class="nav-link">Terraform</a></li>
+      <li><a href="#" data-page="aws" class="nav-link">AWS</a></li>
+      <li id="nav-projects" class="hidden"><a href="#" data-page="projects" class="nav-link">Meus Projetos</a></li>
+    </ul>
+    <div class="nav-auth" id="nav-auth">
+      <button class="btn btn-outline" id="btn-login">Login</button>
+      <button class="btn btn-primary" id="btn-register">Cadastrar</button>
+    </div>
+    <div class="nav-user hidden" id="nav-user">
+      <span class="user-avatar" id="user-avatar">U</span>
+      <span class="user-name" id="user-name">Usuário</span>
+      <div class="user-dropdown" id="user-dropdown">
+        <a href="#" id="btn-profile">&#9881; Perfil</a>
+        <a href="#" id="btn-logout" class="danger">&#8594; Sair</a>
+      </div>
+    </div>
+    <button class="nav-toggle" id="nav-toggle">&#9776;</button>
+  </nav>
+
+  <!-- ═══════════════════════ PÁGINAS ═══════════════════════ -->
+  <main id="app">
+
+    <!-- ── HOME ── -->
+    <section id="page-home" class="page active">
+
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero-bg">
+          <div class="hero-grid"></div>
+          <div class="hero-glow glow-1"></div>
+          <div class="hero-glow glow-2"></div>
+        </div>
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            Bem-vindo ao universo DevOps
+          </div>
+          <h1 class="hero-title">
+            Automatize.<br />
+            <span class="gradient-text">Escale.</span><br />
+            Entregue.
+          </h1>
+          <p class="hero-subtitle">
+            Explore as principais ferramentas do mundo DevOps: Docker, Terraform e AWS.
+            Aprenda como elas trabalham juntas para criar infraestruturas modernas,
+            escaláveis e confiáveis.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary btn-lg" data-page="docker">Começar a Explorar</button>
+            <button class="btn btn-ghost btn-lg" id="hero-login-btn">Criar Conta Grátis</button>
+          </div>
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-num">3</span>
+              <span class="stat-label">Tecnologias</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+              <span class="stat-num">100%</span>
+              <span class="stat-label">Prático</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+              <span class="stat-num">&#9729;</span>
+              <span class="stat-label">Cloud Native</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="terminal-window">
+            <div class="terminal-header">
+              <span class="terminal-dot red"></span>
+              <span class="terminal-dot yellow"></span>
+              <span class="terminal-dot green"></span>
+              <span class="terminal-title">terminal</span>
+            </div>
+            <div class="terminal-body" id="terminal-body">
+              <div class="terminal-line"><span class="prompt">$</span> <span class="cmd typing" id="terminal-cmd"></span><span class="cursor">|</span></div>
+              <div class="terminal-output" id="terminal-output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards das tecnologias -->
+      <div class="section">
+        <div class="section-header">
+          <h2>As Ferramentas do DevOps Moderno</h2>
+          <p>Conheça as três pilastras que sustentam a infraestrutura de hoje</p>
+        </div>
+        <div class="tech-cards">
+          <div class="tech-card" data-page="docker">
+            <div class="card-icon docker-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 00-.75.748 11.376 11.376 0 00.692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 003.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288Z"/></svg>
+            </div>
+            <h3>Docker</h3>
+            <p>Containerize suas aplicações e garanta que rodem de forma idêntica em qualquer ambiente.</p>
+            <div class="card-tags">
+              <span class="tag">Containers</span>
+              <span class="tag">Portabilidade</span>
+              <span class="tag">Isolamento</span>
+            </div>
+            <span class="card-arrow">→</span>
+          </div>
+
+          <div class="tech-card featured" data-page="terraform">
+            <div class="card-badge">Popular</div>
+            <div class="card-icon terraform-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M0 0v6.338l5.47 3.16V3.16zm5.47 16.862L0 13.698v6.336L5.47 23.17zm.19-13.7v6.34l5.49-3.17V0zm5.49 9.51l-5.49 3.17v6.34l5.49-3.17zm.19-6.34v6.34l5.49-3.17V3.162zm11-6.34v6.34l-5.51 3.17V0z"/></svg>
+            </div>
+            <h3>Terraform</h3>
+            <p>Defina sua infraestrutura como código e gerencie recursos em múltiplos provedores cloud.</p>
+            <div class="card-tags">
+              <span class="tag">IaC</span>
+              <span class="tag">Multi-cloud</span>
+              <span class="tag">Automação</span>
+            </div>
+            <span class="card-arrow">→</span>
+          </div>
+
+          <div class="tech-card" data-page="aws">
+            <div class="card-icon aws-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.763 10.036c0 .296.032.535.088.71.064.176.144.368.256.576.04.063.056.127.056.183 0 .08-.048.16-.152.24l-.503.335a.383.383 0 01-.208.072c-.08 0-.16-.04-.239-.112a2.47 2.47 0 01-.287-.375 6.18 6.18 0 01-.248-.471c-.622.734-1.405 1.101-2.347 1.101-.67 0-1.205-.191-1.596-.574-.391-.384-.59-.894-.59-1.533 0-.678.239-1.23.726-1.644.487-.415 1.133-.623 1.955-.623.272 0 .551.024.846.064.296.04.6.104.918.176v-.583c0-.607-.127-1.030-.375-1.277-.255-.248-.686-.367-1.3-.367-.28 0-.568.031-.863.103-.295.072-.583.16-.862.272a2.287 2.287 0 01-.28.104.488.488 0 01-.127.023c-.112 0-.168-.08-.168-.247v-.391c0-.128.016-.224.056-.28a.597.597 0 01.224-.167c.279-.144.614-.264 1.005-.36a4.84 4.84 0 011.246-.151c.95 0 1.644.216 2.091.647.439.43.662 1.085.662 1.963v2.586zm-3.24 1.214c.263 0 .534-.048.822-.144.287-.096.543-.271.758-.51.128-.152.224-.32.272-.512.047-.191.08-.423.08-.694v-.335a6.66 6.66 0 00-.735-.136 6.02 6.02 0 00-.75-.048c-.535 0-.926.104-1.19.32-.263.215-.39.518-.39.917 0 .375.095.655.295.846.191.2.47.296.838.296zm6.41.862c-.144 0-.240-.024-.304-.08-.063-.048-.12-.16-.168-.311L7.586 5.55a1.398 1.398 0 01-.072-.32c0-.128.064-.2.191-.2h.783c.151 0 .255.025.31.08.065.048.113.16.16.312l1.342 5.284 1.245-5.284c.04-.16.088-.264.151-.312a.549.549 0 01.32-.08h.638c.152 0 .256.025.32.08.063.048.12.16.151.312l1.261 5.348 1.381-5.348c.048-.16.104-.264.16-.312a.52.52 0 01.311-.08h.743c.127 0 .2.065.2.2 0 .04-.009.08-.017.128a1.137 1.137 0 01-.056.2l-1.923 6.17c-.048.16-.104.263-.168.311a.51.51 0 01-.303.08h-.687c-.151 0-.255-.025-.32-.08-.063-.056-.119-.16-.15-.32l-1.238-5.148-1.23 5.140c-.04.16-.087.264-.15.32-.065.056-.177.08-.32.08zm10.256.215c-.415 0-.83-.048-1.229-.143-.399-.096-.71-.2-.918-.32-.128-.071-.215-.151-.247-.223a.563.563 0 01-.048-.224v-.407c0-.167.063-.247.183-.247.048 0 .096.008.144.024.048.016.12.048.2.08.271.12.566.215.878.279.319.064.63.096.95.096.502 0 .894-.088 1.165-.264a.86.86 0 00.415-.758.777.777 0 00-.215-.559c-.144-.151-.416-.287-.807-.415l-1.157-.36c-.583-.183-1.014-.454-1.277-.813a1.902 1.902 0 01-.4-1.158c0-.335.073-.63.216-.886.144-.255.335-.479.575-.654.24-.184.51-.32.83-.415.32-.096.655-.136 1.006-.136.175 0 .359.008.535.032.183.024.35.056.518.088.16.04.312.08.455.127.144.048.256.096.336.144a.69.69 0 01.24.2.43.43 0 01.071.263v.375c0 .168-.063.256-.184.256a.83.83 0 01-.303-.096 3.652 3.652 0 00-1.532-.311c-.455 0-.815.071-1.062.223-.248.152-.375.383-.375.71 0 .224.08.416.24.567.159.152.454.304.877.44l1.134.358c.574.184.99.44 1.237.767.247.327.367.702.367 1.117 0 .343-.072.655-.207.926-.144.272-.336.511-.583.703-.248.2-.543.343-.886.447-.36.111-.743.167-1.142.167zM21.698 16.207c-2.626 1.94-6.442 2.969-9.722 2.969-4.598 0-8.74-1.7-11.87-4.526-.247-.223-.025-.527.27-.351 3.384 1.963 7.559 3.147 11.877 3.147 2.914 0 6.114-.607 9.06-1.852.439-.2.814.287.385.613zm1.101-1.258c-.335-.43-2.22-.207-3.074-.103-.255.032-.295-.192-.063-.36 1.5-1.053 3.967-.75 4.254-.399.287.36-.08 2.826-1.485 4.007-.215.184-.423.088-.327-.151.32-.79 1.03-2.57.695-2.994z"/></svg>
+            </div>
+            <h3>AWS</h3>
+            <p>A maior plataforma de cloud do mundo. Desde computação até machine learning, tudo na nuvem.</p>
+            <div class="card-tags">
+              <span class="tag">Cloud</span>
+              <span class="tag">Escalável</span>
+              <span class="tag">Gerenciado</span>
+            </div>
+            <span class="card-arrow">→</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pipeline DevOps visual -->
+      <div class="section section-dark">
+        <div class="section-header">
+          <h2>O Ciclo DevOps</h2>
+          <p>Como essas ferramentas se encaixam no pipeline moderno</p>
+        </div>
+        <div class="pipeline">
+          <div class="pipeline-step">
+            <div class="pipeline-icon">&#128221;</div>
+            <h4>Código</h4>
+            <p>Desenvolvimento e controle de versão com Git</p>
+          </div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step">
+            <div class="pipeline-icon">&#128674;</div>
+            <h4>Build</h4>
+            <p>Docker empacota a aplicação em containers</p>
+          </div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step">
+            <div class="pipeline-icon">&#9881;</div>
+            <h4>Infra</h4>
+            <p>Terraform provisiona os recursos na nuvem</p>
+          </div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step">
+            <div class="pipeline-icon">&#9729;</div>
+            <h4>Deploy</h4>
+            <p>AWS hospeda e escala a aplicação</p>
+          </div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step">
+            <div class="pipeline-icon">&#128200;</div>
+            <h4>Monitor</h4>
+            <p>CloudWatch e logs mantêm tudo observável</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="section cta-section">
+        <div class="cta-box">
+          <h2>Pronto para começar?</h2>
+          <p>Crie sua conta gratuitamente e comece a gerenciar seus projetos DevOps</p>
+          <button class="btn btn-primary btn-lg" id="cta-register-btn">Criar Conta Grátis</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── DOCKER ── -->
+    <section id="page-docker" class="page">
+      <div class="content-hero docker-hero">
+        <div class="content-hero-inner">
+          <div class="content-icon docker-icon-lg">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 00-.75.748 11.376 11.376 0 00.692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 003.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288Z"/></svg>
+          </div>
+          <h1>Docker</h1>
+          <p>Containerização de aplicações modernas</p>
+        </div>
+      </div>
+
+      <div class="content-body">
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>&#128187; O que é Docker?</h3>
+            <p>Docker é uma plataforma open-source que permite criar, distribuir e executar aplicações dentro de containers. Um container é um ambiente isolado que contém tudo o que sua aplicação precisa para rodar: código, runtime, bibliotecas e configurações.</p>
+            <p>A grande vantagem? Se roda na sua máquina, roda em qualquer lugar.</p>
+          </div>
+          <div class="info-card">
+            <h3>&#9881; Como funciona?</h3>
+            <ul class="info-list">
+              <li><strong>Dockerfile</strong> — Receita para construir a imagem</li>
+              <li><strong>Image</strong> — Snapshot imutável da aplicação</li>
+              <li><strong>Container</strong> — Instância rodando da imagem</li>
+              <li><strong>Registry</strong> — Repositório de imagens (Docker Hub)</li>
+              <li><strong>Docker Compose</strong> — Orquestra múltiplos containers</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-showcase">
+          <h3>Exemplo: Dockerfile básico</h3>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">Dockerfile</span>
+              <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+            </div>
+            <pre><code><span class="c-keyword">FROM</span> node:<span class="c-string">18-alpine</span>
+
+<span class="c-keyword">WORKDIR</span> <span class="c-string">/app</span>
+
+<span class="c-keyword">COPY</span> package*.json ./
+<span class="c-keyword">RUN</span> npm install --production
+
+<span class="c-keyword">COPY</span> . .
+
+<span class="c-keyword">EXPOSE</span> <span class="c-number">3000</span>
+
+<span class="c-keyword">CMD</span> [<span class="c-string">"node"</span>, <span class="c-string">"server.js"</span>]</code></pre>
+          </div>
+        </div>
+
+        <div class="code-showcase">
+          <h3>Docker Compose: Aplicação + Banco de dados</h3>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">docker-compose.yml</span>
+              <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+            </div>
+            <pre><code><span class="c-key">version</span>: <span class="c-string">'3.8'</span>
+<span class="c-key">services</span>:
+  <span class="c-key">app</span>:
+    <span class="c-key">build</span>: .
+    <span class="c-key">ports</span>: [<span class="c-string">"3000:3000"</span>]
+    <span class="c-key">environment</span>:
+      - <span class="c-string">DB_HOST=db</span>
+    <span class="c-key">depends_on</span>: [db]
+
+  <span class="c-key">db</span>:
+    <span class="c-key">image</span>: <span class="c-string">postgres:15</span>
+    <span class="c-key">environment</span>:
+      - <span class="c-string">POSTGRES_PASSWORD=secret</span></code></pre>
+          </div>
+        </div>
+
+        <div class="benefits-grid">
+          <div class="benefit-item">
+            <span class="benefit-icon">&#9989;</span>
+            <h4>Consistência</h4>
+            <p>Mesmo ambiente em dev, staging e produção</p>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">&#9889;</span>
+            <h4>Velocidade</h4>
+            <p>Inicia em segundos, não minutos</p>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">&#128260;</span>
+            <h4>Escalabilidade</h4>
+            <p>Escale horizontalmente com facilidade</p>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">&#128274;</span>
+            <h4>Isolamento</h4>
+            <p>Cada container é independente</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TERRAFORM ── -->
+    <section id="page-terraform" class="page">
+      <div class="content-hero terraform-hero">
+        <div class="content-hero-inner">
+          <div class="content-icon terraform-icon-lg">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M0 0v6.338l5.47 3.16V3.16zm5.47 16.862L0 13.698v6.336L5.47 23.17zm.19-13.7v6.34l5.49-3.17V0zm5.49 9.51l-5.49 3.17v6.34l5.49-3.17zm.19-6.34v6.34l5.49-3.17V3.162zm11-6.34v6.34l-5.51 3.17V0z"/></svg>
+          </div>
+          <h1>Terraform</h1>
+          <p>Infrastructure as Code para o mundo moderno</p>
+        </div>
+      </div>
+
+      <div class="content-body">
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>&#127759; O que é Terraform?</h3>
+            <p>Terraform é uma ferramenta de Infrastructure as Code (IaC) da HashiCorp que permite definir, provisionar e gerenciar infraestrutura em múltiplos provedores cloud usando uma linguagem declarativa chamada HCL.</p>
+            <p>Com Terraform, você versiona sua infraestrutura como código, tornando-a reproduzível e auditável.</p>
+          </div>
+          <div class="info-card">
+            <h3>&#128196; Comandos essenciais</h3>
+            <ul class="info-list">
+              <li><code>terraform init</code> — Inicializa o projeto</li>
+              <li><code>terraform plan</code> — Mostra o que será criado</li>
+              <li><code>terraform apply</code> — Aplica as mudanças</li>
+              <li><code>terraform destroy</code> — Remove os recursos</li>
+              <li><code>terraform state</code> — Gerencia o estado</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-showcase">
+          <h3>Exemplo: EC2 + Security Group na AWS</h3>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">main.tf</span>
+              <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+            </div>
+            <pre><code><span class="c-keyword">provider</span> <span class="c-string">"aws"</span> {
+  region = <span class="c-string">"us-east-1"</span>
+}
+
+<span class="c-keyword">resource</span> <span class="c-string">"aws_instance"</span> <span class="c-string">"web"</span> {
+  ami           = <span class="c-string">"ami-0c55b159cbfafe1f0"</span>
+  instance_type = <span class="c-string">"t2.micro"</span>
+
+  tags = {
+    Name        = <span class="c-string">"WebServer"</span>
+    Environment = <span class="c-string">"production"</span>
+  }
+}
+
+<span class="c-keyword">output</span> <span class="c-string">"instance_ip"</span> {
+  value = aws_instance.web.public_ip
+}</code></pre>
+          </div>
+        </div>
+
+        <div class="terraform-workflow">
+          <h3>O Fluxo do Terraform</h3>
+          <div class="workflow-steps">
+            <div class="workflow-step">
+              <div class="workflow-num">1</div>
+              <h4>Write</h4>
+              <p>Escreva os arquivos .tf descrevendo a infraestrutura desejada</p>
+            </div>
+            <div class="workflow-arrow">→</div>
+            <div class="workflow-step">
+              <div class="workflow-num">2</div>
+              <h4>Plan</h4>
+              <p>Terraform mostra exatamente o que será criado, modificado ou destruído</p>
+            </div>
+            <div class="workflow-arrow">→</div>
+            <div class="workflow-step">
+              <div class="workflow-num">3</div>
+              <h4>Apply</h4>
+              <p>Confirme e a infraestrutura é provisionada automaticamente</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="benefits-grid">
+          <div class="benefit-item">
+            <span class="benefit-icon">&#128196;</span>
+            <h4>IaC</h4>
+            <p>Infraestrutura versionada no Git</p>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">&#127759;</span>
+            <h4>Multi-cloud</h4>
+            <p>AWS, GCP, Azure e muito mais</p>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">&#128260;</span>
+            <h4>Idempotente</h4>
+            <p>Aplique várias vezes com segurança</p>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">&#128101;</span>
+            <h4>Colaborativo</h4>
+            <p>Times trabalham juntos na infra</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── AWS ── -->
+    <section id="page-aws" class="page">
+      <div class="content-hero aws-hero">
+        <div class="content-hero-inner">
+          <div class="content-icon aws-icon-lg">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.763 10.036c0 .296.032.535.088.71.064.176.144.368.256.576.04.063.056.127.056.183 0 .08-.048.16-.152.24l-.503.335a.383.383 0 01-.208.072c-.08 0-.16-.04-.239-.112a2.47 2.47 0 01-.287-.375 6.18 6.18 0 01-.248-.471c-.622.734-1.405 1.101-2.347 1.101-.67 0-1.205-.191-1.596-.574-.391-.384-.59-.894-.59-1.533 0-.678.239-1.23.726-1.644.487-.415 1.133-.623 1.955-.623.272 0 .551.024.846.064.296.04.6.104.918.176v-.583c0-.607-.127-1.030-.375-1.277-.255-.248-.686-.367-1.3-.367-.28 0-.568.031-.863.103-.295.072-.583.16-.862.272a2.287 2.287 0 01-.28.104.488.488 0 01-.127.023c-.112 0-.168-.08-.168-.247v-.391c0-.128.016-.224.056-.28a.597.597 0 01.224-.167c.279-.144.614-.264 1.005-.36a4.84 4.84 0 011.246-.151c.95 0 1.644.216 2.091.647.439.43.662 1.085.662 1.963v2.586zm-3.24 1.214c.263 0 .534-.048.822-.144.287-.096.543-.271.758-.51.128-.152.224-.32.272-.512.047-.191.08-.423.08-.694v-.335a6.66 6.66 0 00-.735-.136 6.02 6.02 0 00-.75-.048c-.535 0-.926.104-1.19.32-.263.215-.39.518-.39.917 0 .375.095.655.295.846.191.2.47.296.838.296zm6.41.862c-.144 0-.240-.024-.304-.08-.063-.048-.12-.16-.168-.311L7.586 5.55a1.398 1.398 0 01-.072-.32c0-.128.064-.2.191-.2h.783c.151 0 .255.025.31.08.065.048.113.16.16.312l1.342 5.284 1.245-5.284c.04-.16.088-.264.151-.312a.549.549 0 01.32-.08h.638c.152 0 .256.025.32.08.063.048.12.16.151.312l1.261 5.348 1.381-5.348c.048-.16.104-.264.16-.312a.52.52 0 01.311-.08h.743c.127 0 .2.065.2.2 0 .04-.009.08-.017.128a1.137 1.137 0 01-.056.2l-1.923 6.17c-.048.16-.104.263-.168.311a.51.51 0 01-.303.08h-.687c-.151 0-.255-.025-.32-.08-.063-.056-.119-.16-.15-.32l-1.238-5.148-1.23 5.140c-.04.16-.087.264-.15.32-.065.056-.177.08-.32.08zm10.256.215c-.415 0-.83-.048-1.229-.143-.399-.096-.71-.2-.918-.32-.128-.071-.215-.151-.247-.223a.563.563 0 01-.048-.224v-.407c0-.167.063-.247.183-.247.048 0 .096.008.144.024.048.016.12.048.2.08.271.12.566.215.878.279.319.064.63.096.95.096.502 0 .894-.088 1.165-.264a.86.86 0 00.415-.758.777.777 0 00-.215-.559c-.144-.151-.416-.287-.807-.415l-1.157-.36c-.583-.183-1.014-.454-1.277-.813a1.902 1.902 0 01-.4-1.158c0-.335.073-.63.216-.886.144-.255.335-.479.575-.654.24-.184.51-.32.83-.415.32-.096.655-.136 1.006-.136.175 0 .359.008.535.032.183.024.35.056.518.088.16.04.312.08.455.127.144.048.256.096.336.144a.69.69 0 01.24.2.43.43 0 01.071.263v.375c0 .168-.063.256-.184.256a.83.83 0 01-.303-.096 3.652 3.652 0 00-1.532-.311c-.455 0-.815.071-1.062.223-.248.152-.375.383-.375.71 0 .224.08.416.24.567.159.152.454.304.877.44l1.134.358c.574.184.99.44 1.237.767.247.327.367.702.367 1.117 0 .343-.072.655-.207.926-.144.272-.336.511-.583.703-.248.2-.543.343-.886.447-.36.111-.743.167-1.142.167zM21.698 16.207c-2.626 1.94-6.442 2.969-9.722 2.969-4.598 0-8.74-1.7-11.87-4.526-.247-.223-.025-.527.27-.351 3.384 1.963 7.559 3.147 11.877 3.147 2.914 0 6.114-.607 9.06-1.852.439-.2.814.287.385.613zm1.101-1.258c-.335-.43-2.22-.207-3.074-.103-.255.032-.295-.192-.063-.36 1.5-1.053 3.967-.75 4.254-.399.287.36-.08 2.826-1.485 4.007-.215.184-.423.088-.327-.151.32-.79 1.03-2.57.695-2.994z"/></svg>
+          </div>
+          <h1>Amazon Web Services</h1>
+          <p>A plataforma cloud mais completa do mundo</p>
+        </div>
+      </div>
+
+      <div class="content-body">
+        <div class="aws-services-grid">
+          <div class="aws-service-card">
+            <div class="service-icon">&#9729;</div>
+            <h4>EC2</h4>
+            <p>Servidores virtuais escaláveis na nuvem</p>
+          </div>
+          <div class="aws-service-card">
+            <div class="service-icon">&#128220;</div>
+            <h4>S3</h4>
+            <p>Armazenamento de objetos ilimitado</p>
+          </div>
+          <div class="aws-service-card">
+            <div class="service-icon">&#128194;</div>
+            <h4>DynamoDB</h4>
+            <p>Banco NoSQL totalmente gerenciado</p>
+          </div>
+          <div class="aws-service-card">
+            <div class="service-icon">&#128272;</div>
+            <h4>Cognito</h4>
+            <p>Autenticação e autorização de usuários</p>
+          </div>
+          <div class="aws-service-card">
+            <div class="service-icon">&#128640;</div>
+            <h4>Lambda</h4>
+            <p>Funções serverless sob demanda</p>
+          </div>
+          <div class="aws-service-card">
+            <div class="service-icon">&#128268;</div>
+            <h4>API Gateway</h4>
+            <p>Crie e gerencie APIs REST com facilidade</p>
+          </div>
+          <div class="aws-service-card">
+            <div class="service-icon">&#128200;</div>
+            <h4>CloudWatch</h4>
+            <p>Monitoramento e observabilidade</p>
+          </div>
+          <div class="aws-service-card">
+            <div class="service-icon">&#128241;</div>
+            <h4>ECS / EKS</h4>
+            <p>Orquestração de containers Docker</p>
+          </div>
+        </div>
+
+        <div class="info-grid" style="margin-top: 2rem;">
+          <div class="info-card">
+            <h3>&#127959; Arquitetura deste projeto</h3>
+            <p>Este próprio site utiliza AWS em sua arquitetura:</p>
+            <ul class="info-list">
+              <li><strong>Cognito</strong> — Autenticação de usuários</li>
+              <li><strong>DynamoDB</strong> — Armazenamento de projetos</li>
+              <li><strong>EC2 + NGINX</strong> — Hospedagem do frontend</li>
+              <li><strong>Node.js</strong> — Backend e integração AWS</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h3>&#128170; Por que AWS?</h3>
+            <ul class="info-list">
+              <li>Maior marketplace de serviços cloud</li>
+              <li>Alta disponibilidade global (regiões)</li>
+              <li>Free tier generoso para aprender</li>
+              <li>Integração nativa com Terraform e Docker</li>
+              <li>Documentação extensa e comunidade ativa</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PROJETOS ── -->
+    <section id="page-projects" class="page">
+      <div class="projects-header">
+        <div>
+          <h1>Meus Projetos DevOps</h1>
+          <p>Gerencie e acompanhe seus projetos de infraestrutura</p>
+        </div>
+        <button class="btn btn-primary" id="btn-new-project">+ Novo Projeto</button>
+      </div>
+
+      <div class="projects-filters">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="em-andamento">Em Andamento</button>
+        <button class="filter-btn" data-filter="concluido">Concluídos</button>
+        <button class="filter-btn" data-filter="pausado">Pausados</button>
+      </div>
+
+      <div class="projects-grid" id="projects-grid">
+        <!-- Projetos carregados via JS -->
+        <div class="projects-empty" id="projects-empty">
+          <div class="empty-icon">&#128193;</div>
+          <h3>Nenhum projeto ainda</h3>
+          <p>Crie seu primeiro projeto DevOps!</p>
+          <button class="btn btn-primary" id="btn-empty-project">+ Criar Projeto</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════ MODAIS ═══════════════════════ -->
+
+  <!-- Overlay -->
+  <div class="modal-overlay" id="modal-overlay"></div>
+
+  <!-- Modal Login -->
+  <div class="modal" id="modal-login">
+    <div class="modal-header">
+      <h2>Entrar na conta</h2>
+      <button class="modal-close" data-close="modal-login">&times;</button>
+    </div>
+    <form id="form-login" class="modal-form">
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" id="login-email" placeholder="seu@email.com" required />
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" id="login-password" placeholder="••••••••" required />
+      </div>
+      <div class="form-error hidden" id="login-error"></div>
+      <button type="submit" class="btn btn-primary w-full" id="btn-login-submit">
+        <span class="btn-text">Entrar</span>
+        <span class="btn-loading hidden">&#8987; Aguarde...</span>
+      </button>
+      <p class="modal-switch">Não tem conta? <a href="#" id="link-to-register">Cadastre-se</a></p>
+    </form>
+  </div>
+
+  <!-- Modal Cadastro -->
+  <div class="modal" id="modal-register">
+    <div class="modal-header">
+      <h2>Criar conta</h2>
+      <button class="modal-close" data-close="modal-register">&times;</button>
+    </div>
+    <form id="form-register" class="modal-form">
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" id="reg-name" placeholder="Seu nome" required />
+      </div>
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" id="reg-email" placeholder="seu@email.com" required />
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" id="reg-password" placeholder="Mínimo 8 caracteres" required minlength="8" />
+      </div>
+      <div class="form-error hidden" id="register-error"></div>
+      <button type="submit" class="btn btn-primary w-full" id="btn-register-submit">
+        <span class="btn-text">Criar Conta</span>
+        <span class="btn-loading hidden">&#8987; Aguarde...</span>
+      </button>
+      <p class="modal-switch">Já tem conta? <a href="#" id="link-to-login">Fazer login</a></p>
+    </form>
+  </div>
+
+  <!-- Modal Perfil -->
+  <div class="modal" id="modal-profile">
+    <div class="modal-header">
+      <h2>Meu Perfil</h2>
+      <button class="modal-close" data-close="modal-profile">&times;</button>
+    </div>
+    <div class="modal-form">
+      <div class="profile-avatar-section">
+        <div class="profile-avatar-lg" id="profile-avatar-lg">U</div>
+        <div class="profile-info-header">
+          <h3 id="profile-display-name">Usuário</h3>
+          <p id="profile-display-email">email@email.com</p>
+        </div>
+      </div>
+      <hr class="modal-divider" />
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" id="profile-name-input" placeholder="Seu nome" />
+      </div>
+      <div class="form-error hidden" id="profile-error"></div>
+      <div class="form-success hidden" id="profile-success"></div>
+      <button class="btn btn-primary w-full" id="btn-save-profile">Salvar Alterações</button>
+      <hr class="modal-divider" />
+      <div class="danger-zone">
+        <h4>&#9888; Zona de Perigo</h4>
+        <p>A exclusão da conta é permanente e não pode ser desfeita.</p>
+        <button class="btn btn-danger w-full" id="btn-delete-account">Excluir minha conta</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Confirmar Exclusão de Conta -->
+  <div class="modal modal-sm" id="modal-confirm-delete">
+    <div class="modal-header">
+      <h2>Confirmar Exclusão</h2>
+      <button class="modal-close" data-close="modal-confirm-delete">&times;</button>
+    </div>
+    <div class="modal-form">
+      <p>Tem certeza que deseja excluir sua conta? Todos os seus dados e projetos serão perdidos permanentemente.</p>
+      <div class="modal-actions">
+        <button class="btn btn-outline" data-close="modal-confirm-delete">Cancelar</button>
+        <button class="btn btn-danger" id="btn-confirm-delete-account">Sim, excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Novo/Editar Projeto -->
+  <div class="modal" id="modal-project">
+    <div class="modal-header">
+      <h2 id="modal-project-title">Novo Projeto</h2>
+      <button class="modal-close" data-close="modal-project">&times;</button>
+    </div>
+    <form id="form-project" class="modal-form">
+      <input type="hidden" id="project-id" />
+      <div class="form-group">
+        <label>Nome do Projeto</label>
+        <input type="text" id="project-name" placeholder="Ex: Deploy com Docker + ECS" required />
+      </div>
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea id="project-description" rows="3" placeholder="Descreva o objetivo do projeto..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tecnologias</label>
+          <div class="checkbox-group" id="project-techs">
+            <label class="checkbox-item"><input type="checkbox" value="Docker" /> Docker</label>
+            <label class="checkbox-item"><input type="checkbox" value="Terraform" /> Terraform</label>
+            <label class="checkbox-item"><input type="checkbox" value="AWS" /> AWS</label>
+            <label class="checkbox-item"><input type="checkbox" value="NGINX" /> NGINX</label>
+            <label class="checkbox-item"><input type="checkbox" value="Kubernetes" /> Kubernetes</label>
+            <label class="checkbox-item"><input type="checkbox" value="CI/CD" /> CI/CD</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="project-status">
+            <option value="em-andamento">Em Andamento</option>
+            <option value="concluido">Concluído</option>
+            <option value="pausado">Pausado</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-error hidden" id="project-error"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" data-close="modal-project">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="btn-save-project">
+          <span class="btn-text">Salvar</span>
+          <span class="btn-loading hidden">&#8987;</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Modal Confirmar Exclusão de Projeto -->
+  <div class="modal modal-sm" id="modal-confirm-delete-project">
+    <div class="modal-header">
+      <h2>Excluir Projeto</h2>
+      <button class="modal-close" data-close="modal-confirm-delete-project">&times;</button>
+    </div>
+    <div class="modal-form">
+      <p>Tem certeza que deseja excluir o projeto <strong id="delete-project-name"></strong>?</p>
+      <div class="modal-actions">
+        <button class="btn btn-outline" data-close="modal-confirm-delete-project">Cancelar</button>
+        <button class="btn btn-danger" id="btn-confirm-delete-project">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="nav-logo">&#9881;</span>
+        <span class="nav-title">DevOps<span class="accent">World</span></span>
+      </div>
+      <p class="footer-text">Construído com Docker, Terraform e AWS &bull; NGINX &bull; Node.js</p>
+      <p class="footer-copy">&copy; 2026 DevOpsWorld. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
