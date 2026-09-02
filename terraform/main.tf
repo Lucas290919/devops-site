@@ -9,7 +9,7 @@ terraform {
 
 variable "instance_type" {
   type = string
-  default  = "t2.micro"
+  default  = "t3.micro"
 }
 variable "availability_zone" {
   type = string
@@ -90,8 +90,8 @@ resource "aws_route_table_association" "public_assoc" {
 #
 #
 resource "aws_security_group" "front_sg" {
-  name = "front-end-sg"
-  description = "Permite tráfego web para o Front-End"
+  name = "front_sg"
+  description = "permite trafego para acesso da web"
   vpc_id = aws_vpc.main.id
 
   ingress {
@@ -111,8 +111,8 @@ resource "aws_security_group" "front_sg" {
   }
 }
 resource "aws_security_group" "back_sg" {
-  name = "back-end-sg"
-  description = "Permite tráfego web para o back-End"
+  name = "back_sg"
+  description = "Permite acesso a web para o back-End"
   vpc_id = aws_vpc.main.id
 
   ingress {
@@ -142,8 +142,8 @@ resource "aws_security_group" "back_sg" {
 
 resource "aws_security_group" "rds_sg" {
   vpc_id = aws_vpc.main.id
-  name = "mysql-rds-sg"
-  description = "Grupo de segurança do banco de dados"
+  name = "rds_sg"
+  description = "Grupo de seguranca do banco de dados"
 
   ingress {
     from_port = 3306
@@ -178,8 +178,8 @@ resource "aws_db_instance" "database" {
   allocated_storage    = 10
   db_name              = "mydb"
   engine               = "mysql"
-  engine_version       = "8.1"
-  instance_class       = "db.t3.micro"
+  engine_version       = "8.0"
+  instance_class       = "db.t3.medium"
   username             = "terraform"
   password             = "terraform"
   parameter_group_name = "default.mysql8.0"
@@ -197,7 +197,7 @@ resource "aws_db_instance" "database" {
 #
 
 resource "aws_instance" "front-end" {
-  ami = "ami-091b599f5f318ddd2"
+  ami = "ami-0c7217cdde317cfec"
   vpc_security_group_ids = [aws_security_group.front_sg.id]
   subnet_id = aws_subnet.public.id
   instance_type = var.instance_type
@@ -207,7 +207,7 @@ resource "aws_instance" "front-end" {
   }
 }
 resource "aws_instance" "back-end" {
-  ami = "ami-091b599f5f318ddd2"
+  ami = "ami-0c7217cdde317cfec"
   vpc_security_group_ids = [aws_security_group.back_sg.id]
   subnet_id = aws_subnet.private1.id
   instance_type = var.instance_type

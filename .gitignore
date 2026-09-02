@@ -2,3 +2,8 @@
 docker-estudo.pdf
 /backend/.env.example
 awscliv2.zip
+/terraform/.terraform
+/terraform/.terraform.lock.hcl
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
