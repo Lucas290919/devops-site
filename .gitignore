@@ -1,0 +1,4 @@
+.gitignore
+docker-estudo.pdf
+/backend/.env.example
+awscliv2.zip
