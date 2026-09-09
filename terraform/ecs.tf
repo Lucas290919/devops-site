@@ -23,7 +23,20 @@ resource "aws_ecs_task_definition" "front_task" {
       name      = "front-end-container"
       image     = "lucasveneroso/projeto-devops:front-end"
       essential = true
-
+      enviroment = [
+        {
+        name  = "API_URL"
+        value = aws_lb.front_end.dns_name
+        }
+      ]
+      logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        "awslogs-group"         = aws_cloudwatch_log_group.logs_front.name
+        "awslogs-region"        = "us-east-1"
+        "awslogs-stream-prefix" = "ecs/front_end"
+        }
+      }
       portMappings = [
         {
           containerPort = 80
@@ -50,6 +63,7 @@ resource "aws_ecs_service" "front-end-service" {
 }
 
 #Back-end
+
 resource "aws_ecs_task_definition" "back_task" {
   family                   = "back-end-task"       
   network_mode             = "awsvpc"              
@@ -62,20 +76,32 @@ resource "aws_ecs_task_definition" "back_task" {
       name      = "back-end-container"
       image     = "lucasveneroso/projeto-devops:back-end"
       essential = true
+      logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        "awslogs-group"         = aws_cloudwatch_log_group.logs_back.name
+        "awslogs-region"        = "us-east-1"
+        "awslogs-stream-prefix" = "ecs/back_end"
+        }
+      }
       environment = [
-  {
-    name  = "DB_HOST"
-    value = aws_db_instance.database.address
-  },
-  {
-    name  = "DB_USER"
-    value = aws_db_instance.database.username
-  },
-  {
-    name  = "DB_NAME"
-    value = aws_db_instance.database.db_name
-  }
-]
+                  {
+                    name  = "DB_HOST"
+                    value = aws_db_instance.database.address
+                  },
+                  {
+                    name  = "DB_USER"
+                    value = aws_db_instance.database.username
+                  },
+                  {
+                    name  = "DB_NAME"
+                    value = aws_db_instance.database.db_name
+                  },
+                  {
+                    name = "DB_PASSWORD"
+                    value = aws_db_instance.database.password
+                  }
+                ]
       portMappings = [
         {
           containerPort = 3000
@@ -91,7 +117,13 @@ resource "aws_ecs_service" "back-end-service" {
   cluster         = aws_ecs_cluster.main.id                
   task_definition = aws_ecs_task_definition.back_task.arn 
   desired_count   = 1                                      
-  launch_type     = "FARGATE"                             
+  launch_type     = "FARGATE"
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.target_group_front.arn
+    container_name = "back-end-container"
+    container_port = 3000
+  }
 
   network_configuration {
     subnets          = [aws_subnet.private1.id]              
