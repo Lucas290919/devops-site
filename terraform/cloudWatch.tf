@@ -27,9 +27,16 @@ resource "aws_kinesis_firehose_delivery_stream" "log_stream" {
   }
 }
 
-resource "aws_cloudwatch_log_subscription_filter" "s3_export" {
-  name            = "export-to-firehose"
-  log_group_name  = aws_cloudwatch_log_group.logs_s3.name 
+resource "aws_cloudwatch_log_subscription_filter" "s3_back" {
+  name            = "export-back-firehose"
+  log_group_name  = aws_cloudwatch_log_group.logs_back.name
+  filter_pattern  = "" 
+  destination_arn = aws_kinesis_firehose_delivery_stream.log_stream.arn
+  role_arn        = aws_iam_role.cloudwatch_to_firehose_role.arn
+}
+resource "aws_cloudwatch_log_subscription_filter" "s3_front" {
+  name            = "export-front-firehose"
+  log_group_name  = aws_cloudwatch_log_group.logs_front.name
   filter_pattern  = "" 
   destination_arn = aws_kinesis_firehose_delivery_stream.log_stream.arn
   role_arn        = aws_iam_role.cloudwatch_to_firehose_role.arn

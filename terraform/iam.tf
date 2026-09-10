@@ -88,3 +88,70 @@ resource "aws_iam_role_policy" "cloudwatch_to_firehose_policy" {
     ]
   })
 }
+
+resource "aws_iam_role_policy" "ecs_ssm_policy" {
+  name = "ecs_ssm_secrets_policy"
+  role = aws_iam_role.ecs_execution_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameters",
+          "kms:Decrypt"
+        ]
+        Resource = [
+          aws_ssm_parameter.db_password.arn,
+          aws_ssm_parameter.jwt_secret.arn
+        ]
+      }
+    ]
+  })
+}
+
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "ec2_migration" {
+  name               = "ec2_migration_role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
+resource "aws_iam_role_policy" "ec2_migration_policy" {
+  name = "ec2_ssm_secrets_policy" 
+  role = aws_iam_role.ec2_migration.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter",
+          "kms:Decrypt"
+        ]
+        Resource = [
+          aws_ssm_parameter.db_password.arn,
+          aws_ssm_parameter.jwt_secret.arn
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_instance_profile" "ec2_database_migration_profile" {
+  name = "ec2_migration_profile"
+  role = aws_iam_role.ec2_migration.name
+}

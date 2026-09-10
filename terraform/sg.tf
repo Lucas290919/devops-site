@@ -4,8 +4,8 @@ resource "aws_security_group" "front_sg" {
   vpc_id = aws_vpc.main.id
 
   ingress {
-    from_port = 80
-    to_port = 80
+    from_port = 443
+    to_port = 443
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -21,22 +21,22 @@ resource "aws_security_group" "front_sg" {
 }
 
 resource "aws_security_group" "lb_sg" {
-  name = "back_sg"
+  name = "lb_sg"
   description = "Permite acesso a web para o back-End"
   vpc_id = aws_vpc.main.id
 
   ingress {
-    from_port = 80
-    to_port = 80
+    from_port = 443
+    to_port = 443
     protocol = "tcp"
-    security_groups = [ "0.0.0.0/0" ]
+    security_groups = [aws_security_group.front_sg.id ]
   }
   
   egress {
     from_port   = 3000
     to_port     = 3000
     protocol    = "tcp"
-    cidr_blocks = [aws_security_group.back_sg]
+    security_groups = [ aws_security_group.back_sg.id ]
   }
 
   tags = {
@@ -53,7 +53,7 @@ resource "aws_security_group" "back_sg" {
     from_port = 3000
     to_port = 3000
     protocol = "tcp"
-    security_groups = [ aws_security_group.lb_sg ]
+    security_groups = [ aws_security_group.lb_sg.id ]
   }
   
   egress {
@@ -77,7 +77,7 @@ resource "aws_security_group" "rds_sg" {
     from_port = 3306
     to_port = 3306
     protocol = "tcp"
-    security_groups = [aws_security_group.back_sg.id]
+    security_groups = [aws_security_group.back_sg.id, aws_security_group.migration_sg.id]
   }
   egress {
     from_port   = 0
@@ -85,5 +85,17 @@ resource "aws_security_group" "rds_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
 
+  }
+}
+
+resource "aws_security_group" "migration_sg" {
+  name = "migration-runner-sql"
+  vpc_id = aws_vpc.main.id
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = [ "0.0.0.0/0" ]
   }
 }

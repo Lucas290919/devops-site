@@ -1,14 +1,14 @@
 -- =============================================================================
 -- db/init.sql
--- Script de inicialização do banco de dados devops_site.
+-- Script de inicialização do banco de dados devopsSite.
 -- Executado automaticamente pelo container MySQL na primeira vez que sobe.
 -- =============================================================================
 
-CREATE DATABASE IF NOT EXISTS devops_site
+CREATE DATABASE IF NOT EXISTS devopsSite
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE devops_site;
+USE devopsSite;
 
 -- -----------------------------------------------------------------------------
 -- Tabela: users
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS projects (
 -- Migração: adiciona subtasks caso o volume já exista sem a coluna
 SET @col_exists = (
   SELECT COUNT(*) FROM information_schema.COLUMNS
-  WHERE TABLE_SCHEMA = 'devops_site'
+  WHERE TABLE_SCHEMA = 'devopsSite'
     AND TABLE_NAME   = 'projects'
     AND COLUMN_NAME  = 'subtasks'
 );

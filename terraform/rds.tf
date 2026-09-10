@@ -7,7 +7,7 @@ resource "aws_db_subnet_group" "db_subnet_group" {
 
 resource "aws_db_instance" "database" {
   allocated_storage    = 10
-  db_name              = "devops-site"
+  db_name              = "devopsSite"
   engine               = "mysql"
   engine_version       = "8.0"
   instance_class       = "db.t3.medium"
