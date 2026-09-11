@@ -4,8 +4,8 @@ resource "aws_security_group" "front_sg" {
   vpc_id = aws_vpc.main.id
 
   ingress {
-    from_port = 443
-    to_port = 443
+    from_port = 80
+    to_port = 80
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -26,8 +26,8 @@ resource "aws_security_group" "lb_sg" {
   vpc_id = aws_vpc.main.id
 
   ingress {
-    from_port = 443
-    to_port = 443
+    from_port = 80
+    to_port = 80
     protocol = "tcp"
     security_groups = [aws_security_group.front_sg.id ]
   }
@@ -91,7 +91,7 @@ resource "aws_security_group" "rds_sg" {
 resource "aws_security_group" "migration_sg" {
   name = "migration-runner-sql"
   vpc_id = aws_vpc.main.id
-
+ #Sem ingress
   egress {
     from_port = 0
     to_port = 0

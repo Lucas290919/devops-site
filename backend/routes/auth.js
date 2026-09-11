@@ -14,10 +14,22 @@
 const express    = require('express');
 const crypto     = require('crypto');
 const jwt        = require('jsonwebtoken');
+const rateLimit  = require('express-rate-limit');
 const { pool }   = require('../lib/db');
 const { requireAuth, signToken } = require('../middleware/auth');
 
 const router = express.Router();
+
+// ─── Rate limiting — login ────────────────────────────────────
+// Máximo de 10 tentativas por IP a cada 15 minutos.
+// Retorna 429 com mensagem clara ao exceder o limite.
+const loginLimiter = rateLimit({
+  windowMs:          15 * 60 * 1000, // 15 minutos
+  max:               10,
+  standardHeaders:   true,           // expõe RateLimit-* headers (RFC 6585)
+  legacyHeaders:     false,
+  message:           { message: 'Muitas tentativas de login. Tente novamente em 15 minutos.' },
+});
 
 // ─── Helpers de senha (crypto nativo — sem bcrypt) ────────────
 // Usa PBKDF2 com SHA-256, 100.000 iterações, salt de 16 bytes.
@@ -92,7 +104,7 @@ router.post('/register', async (req, res, next) => {
 
 // ─── POST /api/auth/login ─────────────────────────────────────
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', loginLimiter, async (req, res, next) => {
   try {
     const { email, password } = req.body || {};
 

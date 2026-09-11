@@ -4,7 +4,6 @@
  * middleware/auth.js
  *
  * Autenticação via JWT assinado com segredo local (HS256).
- * Remove toda dependência de AWS Cognito e jwks-rsa.
  *
  * O token é gerado na rota POST /api/auth/login e deve ser
  * enviado no header:  Authorization: Bearer <token>
@@ -15,11 +14,15 @@
 
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET  = process.env.JWT_SECRET;
 const JWT_EXPIRES = process.env.JWT_EXPIRES_IN || '8h';
 
+// Falha imediatamente se o segredo não estiver definido.
+// Usar um fallback hardcoded permitiria que tokens fossem forjados
+// com um segredo público em caso de misconfiguration.
 if (!JWT_SECRET) {
-  console.warn('⚠️  JWT_SECRET não definido — defina no .env antes de usar em produção.');
+  console.error('❌ JWT_SECRET não definida. Configure a variável de ambiente antes de iniciar.');
+  process.exit(1);
 }
 
 /**
@@ -30,7 +33,7 @@ if (!JWT_SECRET) {
 function signToken(user) {
   return jwt.sign(
     { sub: String(user.id), email: user.email },
-    JWT_SECRET || 'dev-insecure-secret',
+    JWT_SECRET,
     { algorithm: 'HS256', expiresIn: JWT_EXPIRES }
   );
 }
@@ -48,9 +51,7 @@ function requireAuth(req, res, next) {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET || 'dev-insecure-secret', {
-      algorithms: ['HS256'],
-    });
+    const decoded = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
 
     req.user = {
       id:    decoded.sub,

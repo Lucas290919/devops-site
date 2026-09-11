@@ -4,8 +4,12 @@ resource "aws_ecs_cluster" "main" {
 
 #atribuindo police
 
-resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy" {
+resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy_front" {
   role       = aws_iam_role.ecs_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy_back" {
+  role       = aws_iam_role.ecs_execution_role-back.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
@@ -39,8 +43,8 @@ resource "aws_ecs_task_definition" "front_task" {
       }
       portMappings = [
         {
-          containerPort = 443
-          hostPort      = 443
+          containerPort = 80
+          hostPort      = 80
           protocol      = "tcp"
         }
       ]
@@ -58,13 +62,13 @@ resource "aws_ecs_service" "front-end-service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.target_group_front.arn
     container_name = "front-end-container"
-    container_port = 443
+    container_port = 80
   }                  
 
   network_configuration {
-    subnets          = [aws_subnet.public.id , aws_subnet.public2.id]              
+    subnets          = [aws_subnet.private1.id, aws_subnet.private2.id]
     security_groups  = [aws_security_group.front_sg.id]    
-    assign_public_ip = true                               
+    assign_public_ip = false                               
   }
 }
 
@@ -76,7 +80,7 @@ resource "aws_ecs_task_definition" "back_task" {
   requires_compatibilities = ["FARGATE"]              
   cpu                      = "256"                  
   memory                   = "512"                  
-  execution_role_arn       = aws_iam_role.ecs_execution_role.arn 
+  execution_role_arn       = aws_iam_role.ecs_execution_role-back.arn
   container_definitions = jsonencode([
     {
       name      = "back-end-container"
@@ -138,7 +142,7 @@ resource "aws_ecs_service" "back-end-service" {
   }
 
   network_configuration {
-    subnets          = [aws_subnet.private1.id]              
+    subnets          = [aws_subnet.private1.id, aws_subnet.private2.id]              
     security_groups  = [aws_security_group.back_sg.id] 
     assign_public_ip = false                               
   }

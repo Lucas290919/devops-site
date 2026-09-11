@@ -13,7 +13,43 @@ resource "aws_iam_role" "ecs_execution_role" {
     ]
   })
 }
+resource "aws_iam_role" "ecs_execution_role-back" {
+  name = "ecs_task_execution_role_back"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
 
+resource "aws_iam_role_policy" "ecs_back_ssm_policy" {
+  name = "ecs_back_ssm_secrets_policy"
+  role = aws_iam_role.ecs_execution_role-back.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameters",
+          "kms:Decrypt"
+        ]
+        Resource = [
+          aws_ssm_parameter.db_password.arn,
+          aws_ssm_parameter.jwt_secret.arn
+        ]
+      }
+    ]
+  })
+}
 resource "aws_iam_role" "firehose_role" {
   name = "firehose_delivery_role"
 
@@ -89,27 +125,6 @@ resource "aws_iam_role_policy" "cloudwatch_to_firehose_policy" {
   })
 }
 
-resource "aws_iam_role_policy" "ecs_ssm_policy" {
-  name = "ecs_ssm_secrets_policy"
-  role = aws_iam_role.ecs_execution_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "ssm:GetParameters",
-          "kms:Decrypt"
-        ]
-        Resource = [
-          aws_ssm_parameter.db_password.arn,
-          aws_ssm_parameter.jwt_secret.arn
-        ]
-      }
-    ]
-  })
-}
 
 data "aws_iam_policy_document" "assume_role" {
   statement {

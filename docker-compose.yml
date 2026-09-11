@@ -6,13 +6,16 @@
 #   backend  — Node.js/Express, porta 3000 (interna)
 #   frontend — NGINX, porta 80 (pública)
 #
+# Pré-requisito:
+#   Copie backend/.env.example para backend/.env e preencha os valores.
+#   O MySQL usa as mesmas variáveis DB_USER / DB_PASSWORD do .env.
+#
 # Uso:
 #   docker compose up -d --build
 #
 # Acesso:
 #   http://localhost      → site
 #   http://localhost/api  → API (via proxy NGINX)
-#   localhost:3306        → MySQL direto (ferramentas externas)
 # =============================================================================
 
 services:
@@ -21,13 +24,15 @@ services:
   mysql:
     image: mysql:8.4
     container_name: devops-site-mysql
+    env_file:
+      - ./backend/.env           # lê DB_USER, DB_PASSWORD, DB_NAME do .env
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE:      devops_site
-      MYSQL_USER:          devops
-      MYSQL_PASSWORD:      devops
-    ports:
-      - "3306:3306"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE:      ${DB_NAME}
+      MYSQL_USER:          ${DB_USER}
+      MYSQL_PASSWORD:      ${DB_PASSWORD}
+    # Porta 3306 não é exposta para o host — o backend acessa pelo nome
+    # de serviço "mysql" dentro da rede interna devops-net.
     volumes:
       - mysql_data:/var/lib/mysql
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -35,7 +40,8 @@ services:
       - devops-net
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "devops", "-pdevops"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1",
+             "-u", "${DB_USER}", "-p${DB_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -50,17 +56,10 @@ services:
     container_name: devops-site-backend
     expose:
       - "3000"
+    env_file:
+      - ./backend/.env           # todas as variáveis vêm do .env
     environment:
-      NODE_ENV:        production
-      PORT:            "3000"
-      DB_HOST:         mysql
-      DB_PORT:         "3306"
-      DB_USER:         devops
-      DB_PASSWORD:     devops
-      DB_NAME:         devops_site
-      JWT_SECRET:      troque-este-segredo-em-producao
-      JWT_EXPIRES_IN:  8h
-      ALLOWED_ORIGINS: "http://localhost,http://localhost:80"
+      DB_HOST: mysql             # sobrescreve apenas o host, que é o nome do serviço Docker
     depends_on:
       mysql:
         condition: service_healthy
@@ -75,8 +74,6 @@ services:
       start_period: 20s
 
   # ── Frontend (NGINX) ───────────────────────────────────────────────────────
-  # Usa a imagem oficial do NGINX diretamente — sem Dockerfile.
-  # O nginx.conf e os arquivos estáticos são montados via volume.
   frontend:
     image: nginx:1.27-alpine
     container_name: devops-site-frontend
@@ -90,7 +87,6 @@ services:
     networks:
       - devops-net
     restart: unless-stopped
-    # Healthcheck usa /nginx-health — stub local, não depende do backend
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost/nginx-health"]
       interval: 30s

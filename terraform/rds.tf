@@ -14,7 +14,11 @@ resource "aws_db_instance" "database" {
   username             = var.db_username
   password             = var.db_password
   parameter_group_name = "default.mysql8.0"
+  storage_encrypted = true
   skip_final_snapshot  = true
+  #Caso fosse em prd
+  #skip_final_snapshot  = false
+  #final_snapshot_identifier = "devops-site-snapshot"
   db_subnet_group_name = aws_db_subnet_group.db_subnet_group.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
 }
