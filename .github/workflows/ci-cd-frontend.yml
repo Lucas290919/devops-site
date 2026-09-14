@@ -1,0 +1,53 @@
+name: Front-End Ci/CD
+on: 
+  push:
+    branches: ["main"]
+    paths: ["frontend/**"]
+  pull_request:
+    branches: ["homolog"]
+    paths: ["frontend/**"]
+
+jobs:
+  test:
+    name: Run Testes
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    - name: Install dependences
+      working-directory: ./frontend
+      run: npm ci
+    - name: Run Tests
+      working-directory: ./frontend
+      run: npm test
+  
+  build-and-deploy:
+    name: Build and Deploy to ECS
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/homolog'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{secrets.DOCKERHUB_USERNAME}}
+        password: ${{secrets.DOCKERHUB_TOKEN}}
+    
+    - name: Build and Push
+      working-directory: ./frontend
+      run: |
+          docker build -t lucasveneroso/projeto-devops:back-end .
+          docker push lucasveneroso/projeto-devops:back-end
+    - name: Configura a AWS
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    - name: Force to ECS
+      run: |
+          aws ecs update-service --cluster cluster_projeto_devops --service back-end-service --force-new-deployment    
