@@ -5,7 +5,7 @@ on:
     paths: [ "backend/**" ] 
 
   pull_request:
-    branches: [ "main" ]
+    branches: [ "homolog" ]
     paths: [ "backend/**" ]
 
 jobs:
