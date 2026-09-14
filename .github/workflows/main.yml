@@ -1,0 +1,62 @@
+name: Backend CI/CD
+on:
+  push:
+    branches: [ "main" ]
+    paths: [ "backend/**" ] 
+
+  pull_request:
+    branches: [ "main" ]
+    paths: [ "backend/**" ]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install Dependencies
+        working-directory: ./backend
+        run: npm ci
+        
+      - name: Run Tests
+        working-directory: ./backend
+        run: npm test
+
+  build-and-deploy:
+    name: Build and Deploy to ECS
+    needs: test
+    
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Image
+        working-directory: ./backend
+        run: |
+          docker build -t lucasveneroso/projeto-devops:back-end .
+          docker push lucasveneroso/projeto-devops:back-end
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Force ECS Update
+        run: |
+          aws ecs update-service --cluster cluster_projeto_devops --service back-end-service --force-new-deployment
