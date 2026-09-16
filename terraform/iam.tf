@@ -13,7 +13,7 @@ resource "aws_iam_role" "ecs_execution_role" {
     ]
   })
 }
-resource "aws_iam_role" "ecs_execution_role-back" {
+resource "aws_iam_role" "ecs_execution_role_back" {
   name = "ecs_task_execution_role_back"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -31,7 +31,7 @@ resource "aws_iam_role" "ecs_execution_role-back" {
 
 resource "aws_iam_role_policy" "ecs_back_ssm_policy" {
   name = "ecs_back_ssm_secrets_policy"
-  role = aws_iam_role.ecs_execution_role-back.id
+  role = aws_iam_role.ecs_execution_role_back.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -117,8 +117,8 @@ resource "aws_iam_role_policy" "cloudwatch_to_firehose_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Action = ["firehose:PutRecord", "firehose:PutRecordBatch"]
+        Effect   = "Allow"
+        Action   = ["firehose:PutRecord", "firehose:PutRecordBatch"]
         Resource = aws_kinesis_firehose_delivery_stream.log_stream.arn
       }
     ]
@@ -145,7 +145,7 @@ resource "aws_iam_role" "ec2_migration" {
 }
 
 resource "aws_iam_role_policy" "ec2_migration_policy" {
-  name = "ec2_ssm_secrets_policy" 
+  name = "ec2_ssm_secrets_policy"
   role = aws_iam_role.ec2_migration.id
 
   policy = jsonencode({
@@ -164,6 +164,13 @@ resource "aws_iam_role_policy" "ec2_migration_policy" {
       }
     ]
   })
+}
+
+// Permite administrar a instância privada pelo Session Manager, sem abrir
+// SSH ou atribuir um endereço público.
+resource "aws_iam_role_policy_attachment" "ec2_migration_ssm" {
+  role       = aws_iam_role.ec2_migration.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_iam_instance_profile" "ec2_database_migration_profile" {

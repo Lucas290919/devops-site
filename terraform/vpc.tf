@@ -1,33 +1,33 @@
 resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
-  enable_dns_support = true
+  enable_dns_support   = true
   tags = {
     "Name" = "Vpc-Estudo"
   }
 }
 
 resource "aws_subnet" "public" {
-  vpc_id = aws_vpc.main.id
-  cidr_block = "10.0.10.0/24"
-  availability_zone = var.availability_zone
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.10.0/24"
+  availability_zone       = var.availability_zone
   map_public_ip_on_launch = true
 }
 resource "aws_subnet" "public2" {
-  vpc_id = aws_vpc.main.id
-  cidr_block = "10.0.11.0/24"
-  availability_zone = var.availability_zone2
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.11.0/24"
+  availability_zone       = var.availability_zone2
   map_public_ip_on_launch = true
 }
 
 resource "aws_subnet" "private1" {
-  vpc_id = aws_vpc.main.id
-  cidr_block = "10.0.2.0/24"
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.2.0/24"
   availability_zone = var.availability_zone
 }
 resource "aws_subnet" "private2" {
-  vpc_id = aws_vpc.main.id
-  cidr_block = "10.0.1.0/24"
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.1.0/24"
   availability_zone = var.availability_zone2
 }
 
@@ -43,6 +43,12 @@ resource "aws_eip" "nat_eip" {
   domain = "vpc"
 }
 
+// Um NAT por AZ evita que uma falha ou a rota cross-AZ derrube as tasks
+// privadas da outra zona.
+resource "aws_eip" "nat_eip2" {
+  domain = "vpc"
+}
+
 resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat_eip.id
   subnet_id     = aws_subnet.public.id
@@ -51,7 +57,18 @@ resource "aws_nat_gateway" "nat" {
     Name = "nat-gateway-projeto-devops"
   }
 
-  depends_on = [aws_internet_gateway.gw] 
+  depends_on = [aws_internet_gateway.gw]
+}
+
+resource "aws_nat_gateway" "nat2" {
+  allocation_id = aws_eip.nat_eip2.id
+  subnet_id     = aws_subnet.public2.id
+
+  tags = {
+    Name = "nat-gateway-projeto-devops-2"
+  }
+
+  depends_on = [aws_internet_gateway.gw]
 }
 
 resource "aws_route_table" "public_rt" {
@@ -69,7 +86,7 @@ resource "aws_route_table" "private_rt" {
   vpc_id = aws_vpc.main.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat.id
   }
 
@@ -78,12 +95,25 @@ resource "aws_route_table" "private_rt" {
   }
 }
 
+resource "aws_route_table" "private_rt2" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat2.id
+  }
+
+  tags = {
+    Name = "rt-private-2"
+  }
+}
+
 resource "aws_route_table_association" "public_assoc" {
-  subnet_id      = aws_subnet.public.id     
+  subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public_rt.id
 }
 resource "aws_route_table_association" "public2_assoc" {
-  subnet_id      = aws_subnet.public2.id     
+  subnet_id      = aws_subnet.public2.id
   route_table_id = aws_route_table.public_rt.id
 }
 resource "aws_route_table_association" "private1_assoc" {
@@ -92,5 +122,5 @@ resource "aws_route_table_association" "private1_assoc" {
 }
 resource "aws_route_table_association" "private2_assoc" {
   subnet_id      = aws_subnet.private2.id
-  route_table_id = aws_route_table.private_rt.id
+  route_table_id = aws_route_table.private_rt2.id
 }

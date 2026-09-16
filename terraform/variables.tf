@@ -1,13 +1,13 @@
 variable "instance_type" {
-  type = string
-  default  = "t3.micro"
+  type    = string
+  default = "t3.micro"
 }
 variable "availability_zone" {
-  type = string
+  type    = string
   default = "us-east-1a"
 }
 variable "availability_zone2" {
-  type = string
+  type    = string
   default = "us-east-1b"
 }
 
@@ -23,6 +23,6 @@ variable "db_password" {
 }
 
 variable "jwt_secret" {
-  type = string
+  type      = string
   sensitive = true
 }

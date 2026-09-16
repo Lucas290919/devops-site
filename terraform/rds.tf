@@ -1,24 +1,26 @@
 resource "aws_db_subnet_group" "db_subnet_group" {
-   subnet_ids = [aws_subnet.private1.id, aws_subnet.private2.id]
-   tags = {
-     "Name" = "database_sbg"
-   }
+  subnet_ids = [aws_subnet.private1.id, aws_subnet.private2.id]
+  tags = {
+    "Name" = "database_sbg"
+  }
 }
 
 resource "aws_db_instance" "database" {
-  allocated_storage    = 10
-  db_name              = "devopsSite"
-  engine               = "mysql"
-  engine_version       = "8.0"
-  instance_class       = "db.t3.medium"
-  username             = var.db_username
-  password             = var.db_password
-  parameter_group_name = "default.mysql8.0"
-  storage_encrypted = true
-  skip_final_snapshot  = true
+  allocated_storage       = 10
+  db_name                 = "devopsSite"
+  engine                  = "mysql"
+  engine_version          = "8.0"
+  instance_class          = "db.t3.medium"
+  username                = var.db_username
+  password                = var.db_password
+  parameter_group_name    = "default.mysql8.0"
+  storage_encrypted       = true
+  publicly_accessible     = false
+  backup_retention_period = 7
+  skip_final_snapshot     = true
   #Caso fosse em prd
   #skip_final_snapshot  = false
   #final_snapshot_identifier = "devops-site-snapshot"
-  db_subnet_group_name = aws_db_subnet_group.db_subnet_group.name
+  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
 }
