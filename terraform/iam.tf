@@ -50,6 +50,32 @@ resource "aws_iam_role_policy" "ecs_back_ssm_policy" {
     ]
   })
 }
+
+resource "aws_iam_role_policy" "ecs_cloudwatch_logs_policy" {
+  for_each = {
+    front = aws_iam_role.ecs_execution_role.name
+    back  = aws_iam_role.ecs_execution_role_back.name
+  }
+
+  name = "ecs-cloudwatch-logs-policy"
+  role = each.value
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role" "firehose_role" {
   name = "firehose_delivery_role"
 
@@ -126,27 +152,27 @@ resource "aws_iam_role_policy" "cloudwatch_to_firehose_policy" {
 }
 
 
-data "aws_iam_policy_document" "assume_role" {
+data "aws_iam_policy_document" "assume_role_lamda" {
   statement {
     effect = "Allow"
 
     principals {
       type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
+      identifiers = ["lambda.amazonaws.com"]
     }
 
     actions = ["sts:AssumeRole"]
   }
 }
 
-resource "aws_iam_role" "ec2_migration" {
-  name               = "ec2_migration_role"
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+resource "aws_iam_role" "lambda_execution_role" {
+  name               = "lambda_execution_role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role_lamda.json
 }
 
-resource "aws_iam_role_policy" "ec2_migration_policy" {
-  name = "ec2_ssm_secrets_policy"
-  role = aws_iam_role.ec2_migration.id
+resource "aws_iam_role_policy" "lambda_migration_policy" {
+  name = "lamdda_ssm_secrets_policy"
+  role = aws_iam_role.lambda_execution_role.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -166,14 +192,7 @@ resource "aws_iam_role_policy" "ec2_migration_policy" {
   })
 }
 
-// Permite administrar a instância privada pelo Session Manager, sem abrir
-// SSH ou atribuir um endereço público.
-resource "aws_iam_role_policy_attachment" "ec2_migration_ssm" {
-  role       = aws_iam_role.ec2_migration.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-}
-
-resource "aws_iam_instance_profile" "ec2_database_migration_profile" {
-  name = "ec2_migration_profile"
-  role = aws_iam_role.ec2_migration.name
+resource "aws_iam_role_policy_attachment" "lambda_vpc_access" {
+  role       = aws_iam_role.lambda_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }

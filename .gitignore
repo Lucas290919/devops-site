@@ -10,3 +10,5 @@ terraform/terraform.tfstate.backup
 terraform/.tfvars
 terraform/*.tfvars
 .env
+node_modules
+package-lock.json

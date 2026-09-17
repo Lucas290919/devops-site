@@ -14,7 +14,7 @@ resource "aws_lb_target_group" "target_group_front" {
   vpc_id      = aws_vpc.main.id
 
   health_check {
-    enabled = true
+    enabled             = true
     path                = "/nginx-health"
     protocol            = "HTTP"
     port                = "80"

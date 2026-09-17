@@ -1,0 +1,10 @@
+{
+  "name": "lambda-migration",
+  "version": "1.0.0",
+  "description": "Executa o script SQL de migração no RDS",
+  "main": "index.js",
+  "dependencies": {
+    "@aws-sdk/client-ssm": "^3.0.0",
+    "mysql2": "^3.9.0"
+  }
+}

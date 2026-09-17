@@ -22,6 +22,7 @@ resource "aws_ecs_task_definition" "front_task" {
   cpu                      = "256"
   memory                   = "512"
   execution_role_arn       = aws_iam_role.ecs_execution_role.arn
+  depends_on               = [aws_cloudwatch_log_group.logs_front]
   container_definitions = jsonencode([
     {
       name      = "front-end-container"
@@ -32,6 +33,7 @@ resource "aws_ecs_task_definition" "front_task" {
         options = {
           "awslogs-group"         = aws_cloudwatch_log_group.logs_front.name
           "awslogs-region"        = "us-east-1"
+          "awslogs-create-group"  = "true"
           "awslogs-stream-prefix" = "ecs/front_end"
         }
       }
@@ -75,6 +77,7 @@ resource "aws_ecs_task_definition" "back_task" {
   cpu                      = "256"
   memory                   = "512"
   execution_role_arn       = aws_iam_role.ecs_execution_role_back.arn
+  depends_on               = [aws_cloudwatch_log_group.logs_back]
   container_definitions = jsonencode([
     {
       name      = "back-end-container"
@@ -85,6 +88,7 @@ resource "aws_ecs_task_definition" "back_task" {
         options = {
           "awslogs-group"         = aws_cloudwatch_log_group.logs_back.name
           "awslogs-region"        = "us-east-1"
+          "awslogs-create-group"  = "true"
           "awslogs-stream-prefix" = "ecs/back_end"
         }
       }
