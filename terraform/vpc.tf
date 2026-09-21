@@ -124,3 +124,38 @@ resource "aws_route_table_association" "private2_assoc" {
   subnet_id      = aws_subnet.private2.id
   route_table_id = aws_route_table.private_rt2.id
 }
+
+# Estes endpoints sao o caminho privado para servicos AWS usados durante a
+# inicializacao das tasks. Sem eles, uma task em subnet privada precisa de um
+# NAT ativo para buscar secrets no SSM e publicar logs no CloudWatch.
+locals {
+  interface_endpoint_services = toset([
+    "com.amazonaws.us-east-1.logs",
+    "com.amazonaws.us-east-1.ssm",
+    "com.amazonaws.us-east-1.ssmmessages",
+    "com.amazonaws.us-east-1.ec2messages"
+  ])
+}
+
+resource "aws_vpc_endpoint" "interface" {
+  for_each = local.interface_endpoint_services
+
+  vpc_id              = aws_vpc.main.id
+  service_name        = each.value
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+  subnet_ids          = [aws_subnet.private1.id, aws_subnet.private2.id]
+  security_group_ids  = [aws_security_group.vpc_endpoints_sg.id]
+
+  tags = {
+    Name = replace(each.value, "com.amazonaws.us-east-1.", "endpoint-")
+  }
+}
+
+# Permite trafego bidirecional no Internet Gateway desta VPC, liberando o acesso
+# a registros publicos (como Docker Hub) mesmo com o VPC Block Public Access ativo na conta AWS.
+resource "aws_vpc_block_public_access_exclusion" "vpc_internet_access" {
+  vpc_id                          = aws_vpc.main.id
+  internet_gateway_exclusion_mode = "allow-bidirectional"
+}
+

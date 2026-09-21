@@ -33,19 +33,27 @@ resource "aws_iam_role_policy" "ecs_back_ssm_policy" {
   name = "ecs_back_ssm_secrets_policy"
   role = aws_iam_role.ecs_execution_role_back.id
 
+  # Permissao para o ECS buscar parametros no SSM e decodificar com KMS.
+  # Nota: kms:Decrypt deve apontar para a chave KMS (*), pois o ARN do parametro SSM nao e uma chave KMS valida.
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
         Effect = "Allow"
         Action = [
-          "ssm:GetParameters",
-          "kms:Decrypt"
+          "ssm:GetParameters"
         ]
         Resource = [
           aws_ssm_parameter.db_password.arn,
           aws_ssm_parameter.jwt_secret.arn
         ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt"
+        ]
+        Resource = "*"
       }
     ]
   })
@@ -174,19 +182,26 @@ resource "aws_iam_role_policy" "lambda_migration_policy" {
   name = "lamdda_ssm_secrets_policy"
   role = aws_iam_role.lambda_execution_role.id
 
+  # Permissao para o Lambda buscar parametros no SSM e decodificar com KMS.
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
         Effect = "Allow"
         Action = [
-          "ssm:GetParameter",
-          "kms:Decrypt"
+          "ssm:GetParameter"
         ]
         Resource = [
           aws_ssm_parameter.db_password.arn,
           aws_ssm_parameter.jwt_secret.arn
         ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt"
+        ]
+        Resource = "*"
       }
     ]
   })

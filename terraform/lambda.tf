@@ -19,6 +19,13 @@ resource "aws_lambda_function" "migration-database" {
   }
 
   runtime = "nodejs24.x"
+  # Timeout estendido (padrao e 3s): conexao com VPC + SSM + RDS pode levar mais de 3 segundos no cold start
+  timeout = 60
+
+  depends_on = [
+    aws_iam_role_policy_attachment.lambda_vpc_access,
+    aws_iam_role_policy.lambda_migration_policy
+  ]
 
   environment {
     variables = {

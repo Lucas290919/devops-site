@@ -1,46 +1,23 @@
-# =============================================================================
-# devops-site — Docker Compose
-#
-# Serviços:
-#   mysql    — MySQL 8.4 (init automático via db/init.sql)
-#   backend  — Node.js/Express, porta 3000 (interna)
-#   frontend — NGINX, porta 80 (pública)
-#
-# Pré-requisito:
-#   Copie backend/.env.example para backend/.env e preencha os valores.
-#   O MySQL usa as mesmas variáveis DB_USER / DB_PASSWORD do .env.
-#
-# Uso:
-#   docker compose up -d --build
-#
-# Acesso:
-#   http://localhost      → site
-#   http://localhost/api  → API (via proxy NGINX)
-# =============================================================================
-
 services:
-
   # ── MySQL ──────────────────────────────────────────────────────────────────
   mysql:
     image: mysql:8.4
     container_name: devops-site-mysql
     env_file:
-      - ./backend/.env           # lê DB_USER, DB_PASSWORD, DB_NAME do .env
+      - ./backend/.env           
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE:      ${DB_NAME}
       MYSQL_USER:          ${DB_USER}
       MYSQL_PASSWORD:      ${DB_PASSWORD}
-    # Porta 3306 não é exposta para o host — o backend acessa pelo nome
-    # de serviço "mysql" dentro da rede interna devops-net.
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./lamda-migration/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - devops-net
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1",
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost",
              "-u", "${DB_USER}", "-p${DB_PASSWORD}"]
       interval: 10s
       timeout: 5s
