@@ -26,7 +26,7 @@ resource "aws_ecs_task_definition" "front_task" {
   container_definitions = jsonencode([
     {
       name      = "front-end-container"
-      image     = "lucasveneroso/projeto-devops:front-end"
+      image     = "lucasveneroso/projeto-devops:front-end-ecs"
       essential = true
       logConfiguration = {
         logDriver = "awslogs"
@@ -52,7 +52,7 @@ resource "aws_ecs_service" "front-end-service" {
   name            = "front-end-service"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.front_task.arn
-  desired_count   = 2
+  desired_count   = 1
   launch_type     = "FARGATE"
 
   load_balancer {
@@ -141,7 +141,7 @@ resource "aws_ecs_service" "back-end-service" {
   name            = "back-end-service"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.back_task.arn
-  desired_count   = 2
+  desired_count   = 1
   launch_type     = "FARGATE"
 
   load_balancer {

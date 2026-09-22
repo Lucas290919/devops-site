@@ -8,12 +8,13 @@ FROM nginx:1.27-alpine
 RUN rm /etc/nginx/conf.d/default.conf
 
 # Copia a configuração personalizada
-COPY ../nginx/nginx.conf /etc/nginx/nginx.conf
+# Copia a config personalizada. O contexto do build e a raiz do repositorio.
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Copia os arquivos estáticos do frontend
-COPY . /usr/share/nginx/html
+COPY frontend /usr/share/nginx/html
 
 EXPOSE 80
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget -qO- http://localhost/health || exit 1
+  CMD wget -qO- http://localhost/ || exit 1

@@ -38,10 +38,9 @@ jobs:
         password: ${{secrets.DOCKERHUB_TOKEN}}
     
     - name: Build and Push
-      working-directory: ./frontend
       run: |
-          docker build -t lucasveneroso/projeto-devops:front-end .
-          docker push lucasveneroso/projeto-devops:front-end
+          docker build -f frontend/Dockerfile.ecs -t lucasveneroso/projeto-devops:front-end-ecs .
+          docker push lucasveneroso/projeto-devops:front-end-ecs
     - name: Configura a AWS
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -50,4 +49,4 @@ jobs:
         aws-region: us-east-1
     - name: Force to ECS
       run: |
-          aws ecs update-service --cluster cluster_projeto_devops --service back-end-service --force-new-deployment    
+          aws ecs update-service --cluster cluster_projeto_devops --service front-end-service --force-new-deployment

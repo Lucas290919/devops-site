@@ -52,7 +52,10 @@ services:
 
   # ── Frontend (NGINX) ───────────────────────────────────────────────────────
   frontend:
-    image: nginx:1.27-alpine
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    image: devops-site-frontend:latest
     container_name: devops-site-frontend
     ports:
       - "80:80"
