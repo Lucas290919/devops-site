@@ -41,3 +41,15 @@ resource "aws_lambda_function" "migration-database" {
     Application = "example"
   }
 }
+
+resource "aws_lambda_invocation" "database_migration" {
+  function_name = aws_lambda_function.migration-database.function_name
+  input         = jsonencode({ action = "migrate" })
+
+  triggers = {
+    migration_hash = data.archive_file.database.output_base64sha256
+    database_host  = aws_db_instance.database.address
+  }
+
+  depends_on = [aws_lambda_function.migration-database]
+}

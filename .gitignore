@@ -12,4 +12,9 @@ terraform/*.tfvars
 .env
 node_modules
 package-lock.json
+<<<<<<< HEAD
 ARQUITETURA.md
+=======
+ARQUITETURA.md
+lambda-migration.zip
+>>>>>>> 36b070d9469dc33ec07f5be546db12d4a21e48db

@@ -6,6 +6,10 @@ resource "aws_db_subnet_group" "db_subnet_group" {
 }
 
 resource "aws_db_instance" "database" {
+<<<<<<< HEAD
+=======
+  # O tamanho mínimo permitido pela AWS para MySQL RDS é 20 GB (10 gera erro no apply).
+>>>>>>> 36b070d9469dc33ec07f5be546db12d4a21e48db
   allocated_storage       = 20
   db_name                 = "devopsSite"
   engine                  = "mysql"
