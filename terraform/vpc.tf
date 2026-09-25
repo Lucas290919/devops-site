@@ -125,13 +125,9 @@ resource "aws_route_table_association" "private2_assoc" {
   route_table_id = aws_route_table.private_rt2.id
 }
 
-<<<<<<< HEAD
-
-=======
 # Estes endpoints sao o caminho privado para servicos AWS usados durante a
 # inicializacao das tasks. Sem eles, uma task em subnet privada precisa de um
 # NAT ativo para buscar secrets no SSM e publicar logs no CloudWatch.
->>>>>>> 36b070d9469dc33ec07f5be546db12d4a21e48db
 locals {
   interface_endpoint_services = toset([
     "com.amazonaws.us-east-1.logs",

@@ -39,13 +39,10 @@ jobs:
     
     - name: Build and Push
       run: |
-<<<<<<< HEAD
           docker build -t lucasveneroso/projeto-devops:front-end .
           docker push lucasveneroso/projeto-devops:front-end
-=======
           docker build -f frontend/Dockerfile.ecs -t lucasveneroso/projeto-devops:front-end-ecs .
           docker push lucasveneroso/projeto-devops:front-end-ecs
->>>>>>> 36b070d9469dc33ec07f5be546db12d4a21e48db
     - name: Configura a AWS
       uses: aws-actions/configure-aws-credentials@v4
       with:
