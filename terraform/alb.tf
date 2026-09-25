@@ -15,7 +15,7 @@ resource "aws_lb_target_group" "target_group_front" {
 
   health_check {
     enabled             = true
-    path                = "/nginx-health"
+    path                = "/"
     protocol            = "HTTP"
     port                = "80"
     matcher             = "200-399"

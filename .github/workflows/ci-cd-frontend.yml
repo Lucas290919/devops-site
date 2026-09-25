@@ -40,8 +40,8 @@ jobs:
     - name: Build and Push
       working-directory: ./frontend
       run: |
-          docker build -t lucasveneroso/projeto-devops:back-end .
-          docker push lucasveneroso/projeto-devops:back-end
+          docker build -t lucasveneroso/projeto-devops:front-end .
+          docker push lucasveneroso/projeto-devops:front-end
     - name: Configura a AWS
       uses: aws-actions/configure-aws-credentials@v4
       with:

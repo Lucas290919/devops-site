@@ -6,7 +6,7 @@ resource "aws_db_subnet_group" "db_subnet_group" {
 }
 
 resource "aws_db_instance" "database" {
-  allocated_storage       = 10
+  allocated_storage       = 20
   db_name                 = "devopsSite"
   engine                  = "mysql"
   engine_version          = "8.0"
@@ -18,6 +18,7 @@ resource "aws_db_instance" "database" {
   publicly_accessible     = false
   backup_retention_period = 7
   skip_final_snapshot     = true
+  multi_az = false
   #Caso fosse em prd
   #skip_final_snapshot  = false
   #final_snapshot_identifier = "devops-site-snapshot"

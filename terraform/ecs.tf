@@ -66,6 +66,17 @@ resource "aws_ecs_service" "front-end-service" {
     security_groups  = [aws_security_group.frontend_sg.id]
     assign_public_ip = false
   }
+
+  # Garante que a infraestrutura de rede (rotas/NAT) e permissoes IAM estejam
+  # 100% criadas antes do Fargate tentar iniciar a primeira task.
+  # Isso previne o erro "ResourceInitializationError: failed to validate logger args".
+  depends_on = [
+    aws_lb_listener.front_end_listener_lb,
+    aws_route_table_association.private1_assoc,
+    aws_route_table_association.private2_assoc,
+    aws_iam_role_policy_attachment.ecs_execution_role_policy_front,
+    aws_iam_role_policy.ecs_cloudwatch_logs_policy
+  ]
 }
 
 #Back-end
@@ -144,4 +155,15 @@ resource "aws_ecs_service" "back-end-service" {
     security_groups  = [aws_security_group.back_sg.id]
     assign_public_ip = false
   }
+
+  # Garante que a infraestrutura de rede (rotas/NAT), ALB e permissoes IAM (inclusive SSM Secrets)
+  # estejam 100% criadas antes do Fargate tentar iniciar a primeira task.
+  depends_on = [
+    aws_lb_listener_rule.backend_api,
+    aws_route_table_association.private1_assoc,
+    aws_route_table_association.private2_assoc,
+    aws_iam_role_policy_attachment.ecs_execution_role_policy_back,
+    aws_iam_role_policy.ecs_cloudwatch_logs_policy,
+    aws_iam_role_policy.ecs_back_ssm_policy
+  ]
 }
